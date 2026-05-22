@@ -1,4 +1,4 @@
-{ config, pkgs, user, ... }:
+{ config, pkgs, user, inputs, ... }:
 
 {
   nixpkgs.overlays = [ (final: prev: {
@@ -187,6 +187,18 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
+  };
+
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    flake = inputs.self.outPath;
+    flags = [
+      "--print-build-logs"
+      "--commit-lock-file"
+    ];
+    dates = "04:40";
+    randomizedDelaySec = "45min";
   };
 
 
