@@ -1,6 +1,7 @@
 { config, pkgs, user, inputs, ... }:
 
 {
+  # Enable Lix
   nixpkgs.overlays = [ (final: prev: {
     inherit (prev.lixPackageSets.stable)
       nixpkgs-review
