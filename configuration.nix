@@ -1,6 +1,16 @@
 { config, pkgs, user, ... }:
 
 {
+  nixpkgs.overlays = [ (final: prev: {
+    inherit (prev.lixPackageSets.stable)
+      nixpkgs-review
+      nix-eval-jobs
+      nix-fast-build
+      colmena;
+  }) ];
+
+  nix.package = pkgs.lixPackageSets.stable.lix;
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -11,8 +21,9 @@
     systemd-boot.enable = true;
     systemd-boot.configurationLimit = 5;
     efi.canTouchEfiVariables = true;
-    timeout = 5;
+    timeout = 3;
   };
+
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -20,6 +31,7 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # Networking
   networking = {
     hostName = "nixos"; # Define your hostname
 
@@ -49,6 +61,7 @@
       };
     };
   };
+
 
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
@@ -92,10 +105,16 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -148,17 +167,21 @@
   programs.nix-ld.enable = true;
 
 
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim
-    git
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  #  wget
   ];
+
+  # Nix Flakes
+  # nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Enable Auto Garbage Collect
   nix = {
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      auto-optimise-store = true;
-    };
+    settings.auto-optimise-store = true;
+
     gc = {
       automatic = true;
       dates = "weekly";
@@ -166,17 +189,18 @@
     };
   };
 
-  # Enable auto upgrade
-  system.autoUpgrade = {
-    enable = true;
-    allowReboot = true;
-    dates = "daily";
-    rebootWindow = {
-      lower = "01:00";
-      upper = "05:00";
-    };
-    runGarbageCollection = true;
-  };
 
-  system.stateVersion = "25.011";
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
+
+  # This value determines the NixOS release from which the default
+  # settings for stateful data, like file locations and database versions
+  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # this value at the release version of the first install of this system.
+  # Before changing this value read the documentation for this option
+  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  system.stateVersion = "25.11"; # Did you read the comment?
 }
