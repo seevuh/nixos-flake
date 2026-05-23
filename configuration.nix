@@ -61,6 +61,16 @@
     };
   };
 
+  # Enable XRDP server for GNOME
+  # services.xrdp.enable = true;
+  # services.xrdp.openFirewall = true;
+  # # services.xrdp.defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
+  # services.xrdp.defaultWindowManager = "${pkgs.icewm}/bin/icewm";
+  # services.gnome.gnome-remote-desktop.enable = true;
+
+  # # Disable autologin to avoid session conflicts
+  # services.displayManager.autoLogin.enable = false;
+  # services.getty.autologinUser = null;
 
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
@@ -89,7 +99,7 @@
 
   # Disable GNOME application suite
   services.gnome.core-apps.enable = false;
-  services.gnome.core-developer-tools.enable = true;
+  services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
   environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
 
@@ -139,13 +149,13 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
-  # Disable sleep
-  systemd.sleep.extraConfig = ''
-    AllowSuspend=no
-    AllowHibernate=no
-    AllowHybridSleep=no
-    AllowSuspendThenHibernate=no
-  '';
+  # Disable systemd targets for sleep and hibernation
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${user} = {
