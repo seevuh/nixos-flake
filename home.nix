@@ -11,6 +11,24 @@
   # environment.
   home.packages = with pkgs; [
     htop
+    foot                  # Wayland terminal emulator
+
+    # gnome core apps
+    nautilus              # file manager 
+    gnome-text-editor     # text editor
+    loupe                 # image viewer
+    papers                # document viewer
+    # decibels              # audio player
+    # showtime              # video player
+    gnome-disk-utility    # Udisks UI
+    baobab                # disk usage
+    gnome-font-viewer     # font viewer
+    gnome-logs            # logs viewer
+    gnome-software        # software store
+    gnome-system-monitor  # system monitor
+
+
+    # gnome extensions
     gnomeExtensions.gjs-osk
     gnomeExtensions.forge
     gnomeExtensions.blur-my-shell
@@ -72,11 +90,13 @@
           "browser.search.defaultenginename" = "google";
           "browser.shell.checkDefaultBrowser" = false;
           "signon.rememberSignons" = false; # Disable built-in password manager
+          "extensions.autoDisableScopes" = 0; # Keeps extenstions from being automatically disabled
         };
         # Install extensions (requires nixpkgs or NUR)
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
           bitwarden
+          darkreader
         ];
       };
     };
