@@ -39,8 +39,14 @@
   dconf = {
     enable = true;
 
-    # Auto enable gnome extensions
     settings = {
+
+      # Auto enable default osk
+      "org/gnome/desktop/ally/applications" = {
+        screen-keyboard-enabled = true;
+      };
+
+      # Auto enable gnome extensions
       "org/gnome/shell" = {
         enabled-extensions = [
           "gjsosk@vishram1123.com"
